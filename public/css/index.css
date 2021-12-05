@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+:root {
+  --primary: rgb(57, 44, 235);
+  --creamy: #cccbd1;
+  --light: #efefef;
+  --dark: #000;
+  --gray: #495464;
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-style: normal;
+  background-color: #dfd8ca;
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  padding: 0rem 4rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 6rem 0;
+  text-align: left;
+}
+
+.projects {
+  margin-top: 3rem;
+  text-align: left;
+}
+
+.projects > h2 {
+  margin-bottom: 1rem;
+}
+
+.project-card {
+  padding-top: 1rem;
+}
+
+.project-card > span {
+  margin-top: 0.5rem;
+}
+
+.project-card > h2 {
+  font-weight: 500;
+}
+
+.project-card > a {
+  font-weight: 500;
+}
+
+.title {
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  font-size: 32px;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.updated > span {
+  font-weight: 600;
+}
+
+a {
+  font-weight: 400;
+  text-decoration: underline;
+  padding: 1rem 0;
+  color: #185adb;
+}
+
+@media screen and (min-width: 992px) {
+  .container {
+    padding: 0rem 22rem;
+  }
+} */
