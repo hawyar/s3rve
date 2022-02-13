@@ -1,11 +1,11 @@
-module github.com/hawyar/s3i
+module github.com/hawyar/s3rve
 
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.42.19
-	github.com/gofiber/fiber/v2 v2.22.0
-	github.com/gofiber/template v1.6.19
+	github.com/aws/aws-sdk-go v1.42.52
+	github.com/gofiber/fiber/v2 v2.26.0
+	github.com/gofiber/template v1.6.22
 )
 
 require (
@@ -13,7 +13,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.31.0 // indirect
+	github.com/valyala/fasthttp v1.32.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 )

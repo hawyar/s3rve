@@ -2,3 +2,11 @@ node_modules
 .DS_Store
 .env
 tmp
+.idea
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+.air.toml
+.vscode

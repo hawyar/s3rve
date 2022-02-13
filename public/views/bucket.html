@@ -1,62 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../css/tail.css" />
-    <title>{{ .Document }}</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/tail.css" />
+  <title>{{ .Document }}</title>
+</head>
 
-  <body>
-    <div class="py-16 px-14 sm:max-w-md md:max-w-3xl">
-      <div class="flex flex-col pb-14">
-        <span class="text-sm font-normal italic">updated at</span>
-        <span>{{ .UpdatedAt }}</span>
-      </div>
-
-      <div class="py-12">
-        <a href="/"> Back </a>
-      </div>
-      <h2 class="text-3xl pb-6">{{ .Title }}</h2>
-
-      <div class="flex flex-row">
-        <div class="my-4">
-          <div class="flex flex-col">
-            <span class="text-sm font-normal">Items</span>
-            <span class="text-xl font-semibold italic">{{ .ItemsCount }}</span>
-          </div>
-        </div>
-
-        <div class="my-4 ml-14">
-          <div class="flex flex-col">
-            <span class="text-sm font-normal">Region</span>
-            <span class="text-xl font-semibold italic">{{ .Region }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-20">
-        <ul class="list-none">
-          {{ range $i, $e := .Bucket }}
-          <li class="mb-10">
-            <a
-              href="/bucket/{{ $.Title }}?prefix={{ $e }}"
-              class="cursor-pointer inline-block"
-            >
-              <h3 class="text-lg font-normal">{{ $e }}</h3>
-            </a>
-          </li>
-          {{ end }}
-        </ul>
-      </div>
-    </div>
-    <!-- <script type="module" src="js/bucket.js"></script> -->
-  </body>
+<body class="bg-white">
+<div class="p-12 max-w-4xl">
+  <h2 class="text-md font-medium pb-6">Index</h2>
+  <div>
+    <ul
+            class="list-none list-none grid grid-cols-4 gap-0 justify-items-start"
+    >
+      {{ range $i, $e := .Buckets }}
+      <li class="flex flex-row justify-between items-center">
+        <img width="18" src="svg/folder.svg" />
+        <a
+                href="/?key={{ .Name }}"
+                class="
+                text-xs
+                font-normal
+                ml-4
+                cursor-pointer
+                text-black
+                no-underline
+              "
+        >
+          {{ .Name }}
+        </a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+<script type="module" src="dist/index.js"></script>
+</body>
 </html>

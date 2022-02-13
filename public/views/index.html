@@ -14,36 +14,28 @@
     <title>{{ .Document }}</title>
   </head>
 
-  <body class="border-indigo-200">
-    <div class="py-16 px-14 sm:max-w-md md:max-w-3xl">
-      <div class="flex flex-col pb-14">
-        <span class="text-sm font-normal italic">updated at</span>
-        <span>{{ .UpdatedAt }}</span>
-      </div>
-      <h2 class="text-3xl pb-6">{{ .Title }}</h2>
-
-      <div class="flex flex-row">
-        <div class="my-4">
-          <div class="flex flex-col">
-            <span class="text-sm font-normal">Count</span>
-            <span class="text-xl font-semibold italic">{{ .BucketCount }}</span>
-          </div>
-        </div>
-
-        <div class="my-4 ml-14">
-          <div class="flex flex-col">
-            <span class="text-sm font-normal">Region</span>
-            <span class="text-xl font-semibold italic">{{ .Region }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-20">
-        <ul class="list-none">
+  <body class="bg-white">
+    <div class="p-12 max-w-4xl">
+      <h2 class="text-md font-medium pb-6">Index</h2>
+      <div>
+        <ul
+          class="list-none list-none grid grid-cols-4 gap-0 justify-items-start"
+        >
           {{ range $i, $e := .Buckets }}
-          <li class="mb-10">
-            <a href="/bucket/{{ .Name }}" class="cursor-pointer">
-              <h3 class="text-lg font-normal">{{ .Name }}</h3>
+          <li class="flex flex-row justify-between items-center">
+            <img width="18" src="svg/folder.svg" />
+            <a href="/bucket?name={{ .Name }}"
+              class="
+              hover:underline
+                text-xs
+                font-normal
+                ml-4
+                cursor-pointer
+                text-black
+                no-underline
+              "
+            >
+              {{ .Name }}
             </a>
           </li>
           {{ end }}

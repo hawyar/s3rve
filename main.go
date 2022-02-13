@@ -20,32 +20,19 @@ type Bucket struct {
 	CreationDate time.Time
 }
 
-type BucketRequest struct {
-	Prefix string `query:"prefix"`
-}
+func newSession(config *aws.Config) (*session.Session, error) {
 
-func newSession() (*session.Session, error) {
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-2")},
-	)
+	if config.Region == nil {
+		config.Region = aws.String("us-east-2")
+	}
+
+	sess, err := session.NewSession(config)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return sess, nil
-}
-
-func allBuckets(s *session.Session) ([]*s3.Bucket, error) {
-	s3svc := s3.New(s)
-
-	buckets, err := s3svc.ListBuckets(nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return buckets.Buckets, nil
 }
 
 func main() {
@@ -75,7 +62,6 @@ func main() {
 		c.Set("X-Frame-Options", "SAMEORIGIN")
 		c.Set("X-DNS-Prefetch-Control", "off")
 
-		// Go to next middleware:
 		return c.Next()
 	})
 
@@ -88,10 +74,8 @@ func main() {
 	// }))
 
 	// beware of BucketRegionError: on bucket and item fetch
-
 	app.Get("/", func(c *fiber.Ctx) error {
-
-		sess, err := newSession()
+		sess, err := newSession(&aws.Config{})
 
 		if err != nil {
 			// redirect to home page for now
@@ -99,11 +83,9 @@ func main() {
 			return c.Redirect("/")
 		}
 
-		buckets, errb := s3.New(sess).ListBuckets(nil)
+		buckets, err := s3.New(sess).ListBuckets(nil)
 
-		if errb != nil {
-			// redirect to home page for now
-			fmt.Println(errb)
+		if err != nil {
 			return c.Redirect("/")
 		}
 
@@ -117,8 +99,8 @@ func main() {
 		}
 
 		return c.Render("index", fiber.Map{
-			"Document":    "S3i - Buckets",
-			"Title":       "Buckets",
+			"Document":    "index",
+			"Title":       "index",
 			"Buckets":     b,
 			"BucketCount": len(b),
 			"Region":      "us-west-2",
@@ -127,23 +109,22 @@ func main() {
 	})
 
 	app.Get("/bucket/:name", func(c *fiber.Ctx) error {
+		fmt.Println("bucket name:", c.Params("name"))
+		bucket := c.Params("name")
 
-		if c.Params("name") == "" {
-			fmt.Println("No bucket name")
+		if bucket == "" {
 			return c.Redirect("/")
 		}
 
+		prefix := c.Query("prefix")
+
+		fmt.Println(prefix)
+
 		fmt.Printf("requested bucket: %s \n", c.Params("name"))
 
-		// print query params if any
-		if c.Query("prefix") != "" {
-			fmt.Printf("requested prefix: %s \n", c.Query("prefix"))
-		}
-
-		sess, err := newSession()
+		sess, err := newSession(&aws.Config{})
 
 		if err != nil {
-			// redirect to home page for now
 			fmt.Println(err)
 			return c.Redirect("/")
 		}
@@ -151,7 +132,7 @@ func main() {
 		s3svc := s3.New(sess)
 
 		b, err := s3svc.ListObjectsV2(&s3.ListObjectsV2Input{
-			Bucket: aws.String(c.Params("name")),
+			Bucket: aws.String(c.Params("prefi")),
 		})
 
 		if err != nil {
@@ -170,20 +151,27 @@ func main() {
 			}
 		}
 
-		u := []string{}
+		var u []string
 
 		for k := range obj {
 			u = append(u, k)
 		}
 
-		return c.Render("bucket", fiber.Map{
-			"Document":   b.Name,
-			"Title":      b.Name,
-			"Bucket":     u,
-			"ItemsCount": len(u),
-			"Region":     "us-east-2",
-			"UpdatedAt":  time.Now().Format("01/02/2006"),
-		})
+		//return c.Render("bucket", fiber.Map{
+		//	"Document":   b.Name,
+		//	"Title":      b.Name,
+		//	"Bucket":     u,
+		//	"ItemsCount": len(u),
+		//	"Region":     "global",
+		//	"UpdatedAt":  time.Now().Format("01/02/2006"),
+		//})
+
+		return c.SendString(fmt.Sprintf("%+v", u))
+	})
+
+	// catch other routes to /
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Redirect("/")
 	})
 
 	log.Println("listening on", port)
