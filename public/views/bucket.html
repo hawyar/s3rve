@@ -1,47 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
-  />
-  <link rel="stylesheet" href="css/tail.css" />
-  <title>{{ .Document }}</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/tail.css" />
+    <title>{{ .Document }}</title>
+  </head>
 
-<body class="bg-white">
-<div class="p-12 max-w-4xl">
-  <h2 class="text-md font-medium pb-6">Index</h2>
-  <div>
-    <ul
-            class="list-none list-none grid grid-cols-4 gap-0 justify-items-start"
-    >
-      {{ range $i, $e := .Buckets }}
-      <li class="flex flex-row justify-between items-center">
-        <img width="18" src="svg/folder.svg" />
-        <a
-                href="/?key={{ .Name }}"
-                class="
+  <body class="bg-white">
+    <div class="p-12 max-w-4xl">
+      <h2 class="text-md font-medium pb-6">{{ .Title }}</h2>
+      <div>
+        <ul
+          class="list-none list-none grid grid-cols-4 gap-0 justify-items-start"
+        >
+          <li class="flex flex-row justify-between items-center">
+            <a
+              href="/{{ .Bucket }}"
+              class="
+                hover:underline
                 text-xs
                 font-normal
-                ml-4
+                ml-2
                 cursor-pointer
                 text-black
                 no-underline
               "
-        >
-          {{ .Name }}
-        </a>
-      </li>
-      {{ end }}
-    </ul>
-  </div>
-</div>
-<script type="module" src="dist/index.js"></script>
-</body>
+            >
+              ...
+            </a>
+          </li>
+          {{ range .Objects }}
+          <li class="flex flex-row justify-between items-center">
+            <img width="18" src="../svg/folder.svg" />
+            <a
+              href="/"
+              class="
+                hover:underline
+                text-xs
+                font-normal
+                ml-2
+                cursor-pointer
+                text-black
+                no-underline
+              "
+            >
+              {{ . }}
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+    <script type="module" src="../dist/index.js"></script>
+  </body>
 </html>

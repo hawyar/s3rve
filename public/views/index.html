@@ -16,7 +16,7 @@
 
   <body class="bg-white">
     <div class="p-12 max-w-4xl">
-      <h2 class="text-md font-medium pb-6">Index</h2>
+      <h2 class="text-md font-medium pb-6">{{ .Title }}</h2>
       <div>
         <ul
           class="list-none list-none grid grid-cols-4 gap-0 justify-items-start"
@@ -24,12 +24,13 @@
           {{ range $i, $e := .Buckets }}
           <li class="flex flex-row justify-between items-center">
             <img width="18" src="svg/folder.svg" />
-            <a href="/bucket?name={{ .Name }}"
+            <a
+              href="/bucket/{{ .Name }}"
               class="
-              hover:underline
+                hover:underline
                 text-xs
                 font-normal
-                ml-4
+                ml-2
                 cursor-pointer
                 text-black
                 no-underline

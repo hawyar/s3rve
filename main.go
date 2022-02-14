@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html"
+	// "github.com/gofiber/fiber/v2/middleware/cache"
 )
 
 type Bucket struct {
@@ -37,6 +39,10 @@ func newSession(config *aws.Config) (*session.Session, error) {
 
 func main() {
 
+	if os.Getenv("AWS_PROFILE") == "" {
+		log.Fatal("No profile detected. Set your profile before starting the server: export AWS_PROFILE=<profile>")
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -51,19 +57,8 @@ func main() {
 	app.Static("/", "./public")
 
 	app.Use(logger.New(logger.Config{
-		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
+		Format: "${status} - ${method} ${path}\n",
 	}))
-
-	app.Use(func(c *fiber.Ctx) error {
-		c.Set("X-XSS-Protection", "1; mode=block")
-		c.Set("X-Content-Type-Options", "nosniff")
-		c.Set("X-Download-Options", "noopen")
-		c.Set("Strict-Transport-Security", "max-age=5184000")
-		c.Set("X-Frame-Options", "SAMEORIGIN")
-		c.Set("X-DNS-Prefetch-Control", "off")
-
-		return c.Next()
-	})
 
 	// app.Use(cache.New(cache.Config{
 	// 	Next: func(c *fiber.Ctx) bool {
@@ -73,12 +68,10 @@ func main() {
 	// 	CacheControl: true,
 	// }))
 
-	// beware of BucketRegionError: on bucket and item fetch
 	app.Get("/", func(c *fiber.Ctx) error {
 		sess, err := newSession(&aws.Config{})
 
 		if err != nil {
-			// redirect to home page for now
 			fmt.Println(err)
 			return c.Redirect("/")
 		}
@@ -89,7 +82,7 @@ func main() {
 			return c.Redirect("/")
 		}
 
-		b := []Bucket{}
+		var b []Bucket
 
 		for _, bucket := range buckets.Buckets {
 			b = append(b, Bucket{
@@ -99,28 +92,18 @@ func main() {
 		}
 
 		return c.Render("index", fiber.Map{
-			"Document":    "index",
-			"Title":       "index",
-			"Buckets":     b,
-			"BucketCount": len(b),
-			"Region":      "us-west-2",
-			"UpdatedAt":   time.Now().Format("01/02/2006"),
+			"Document":  "S3 objects",
+			"Title":     "Buckets",
+			"Buckets":   b,
 		})
 	})
 
 	app.Get("/bucket/:name", func(c *fiber.Ctx) error {
-		fmt.Println("bucket name:", c.Params("name"))
 		bucket := c.Params("name")
 
 		if bucket == "" {
 			return c.Redirect("/")
 		}
-
-		prefix := c.Query("prefix")
-
-		fmt.Println(prefix)
-
-		fmt.Printf("requested bucket: %s \n", c.Params("name"))
 
 		sess, err := newSession(&aws.Config{})
 
@@ -131,9 +114,16 @@ func main() {
 
 		s3svc := s3.New(sess)
 
-		b, err := s3svc.ListObjectsV2(&s3.ListObjectsV2Input{
-			Bucket: aws.String(c.Params("prefi")),
+		fmt.Println(c.Query("prefix"))
+
+		objects, err := s3svc.ListObjectsV2(&s3.ListObjectsV2Input{
+			Bucket: aws.String(bucket),
 		})
+
+		if err != nil {
+			fmt.Println(err)
+			return c.Redirect("/")
+		}
 
 		if err != nil {
 			fmt.Println(err)
@@ -141,35 +131,31 @@ func main() {
 
 		obj := make(map[string]string)
 
-		for _, e := range b.Contents {
+		for _, e := range objects.Contents {
 			if obj[*e.Key] == "" {
 				first := strings.Split(*e.Key, "/")[0]
 
-				// remove the first element from e.Key
 				obj[first] = "/" + strings.Join(strings.Split(*e.Key, "/")[1:], "/")
-
 			}
 		}
 
 		var u []string
 
 		for k := range obj {
+			fmt.Println(k)
 			u = append(u, k)
 		}
 
-		//return c.Render("bucket", fiber.Map{
-		//	"Document":   b.Name,
-		//	"Title":      b.Name,
-		//	"Bucket":     u,
-		//	"ItemsCount": len(u),
-		//	"Region":     "global",
-		//	"UpdatedAt":  time.Now().Format("01/02/2006"),
-		//})
+		sort.Strings(u)
 
-		return c.SendString(fmt.Sprintf("%+v", u))
+		return c.Render("bucket", fiber.Map{
+			"Document":  "S3 Objects",
+			"Title":     bucket,
+			"Bucket":    bucket,
+			"Objects":   u,
+		})
 	})
 
-	// catch other routes to /
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Redirect("/")
 	})

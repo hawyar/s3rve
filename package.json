@@ -1,22 +1,12 @@
 {
-  "name": "hawyardotcom",
-  "version": "1.0.0",
-  "description": "S3i",
-  "main": "index.js",
   "scripts": {
-    "build": "rollup -c & npx tailwindcss -i public/css/index.css -o public/dist/tail.css"
+    "prebuild": "rollup -c & npx tailwindcss -i public/css/index.css -o public/dist/tail.css",
+    "build": "go build",
+    "start": "npm run build && ./s3rve",
+    "dev": "./bin/air"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hawyar/hawyardotcom.git"
-  },
-  "keywords": [],
-  "author": "",
+  "author": "hawyar",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hawyar/hawyardotcom/issues"
-  },
-  "homepage": "https://github.com/hawyar/S3i#readme",
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.6",

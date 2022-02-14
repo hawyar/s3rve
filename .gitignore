@@ -8,5 +8,4 @@ tmp
 .env.test
 .env.production
 .env.staging
-.air.toml
 .vscode
